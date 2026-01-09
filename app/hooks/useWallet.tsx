@@ -110,13 +110,36 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setConnectedProvider(ethereum);
     } catch (err: any) {
       console.error('连接钱包失败:', err);
+      console.error('错误详情:', {
+        type: typeof err,
+        code: err?.code,
+        message: err?.message,
+        fullError: err
+      });
       
-      // 处理用户取消连接
-      if (err.code === 4001 || err.code === 'ACTION_REJECTED') {
-        // 用户取消，不显示错误
+      // 处理用户取消连接（检查各种可能的形式）
+      if (
+        err?.code === 4001 || 
+        err?.code === 'ACTION_REJECTED' ||
+        err === 0 ||
+        err === '0' ||
+        err?.message === '0' ||
+        err?.message?.toLowerCase()?.includes('user rejected') ||
+        err?.message?.toLowerCase()?.includes('user denied') ||
+        err?.message?.toLowerCase()?.includes('cancel')
+      ) {
+        // 用户取消，只在控制台记录，不显示错误
         console.log('用户取消了连接请求');
-      } else if (err.message) {
+        return;
+      }
+      
+      // 处理其他错误
+      if (typeof err === 'number' && err !== 0) {
+        alert(`连接失败，错误代码: ${err}`);
+      } else if (err?.message && err.message !== '0') {
         alert(`连接失败: ${err.message}`);
+      } else if (typeof err === 'string') {
+        alert(`连接失败: ${err}`);
       } else {
         alert('连接钱包失败，请重试');
       }
