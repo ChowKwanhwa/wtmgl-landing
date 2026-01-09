@@ -1,96 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useWallet } from '../hooks/useWallet';
 
 const PRIVATE_SALE_ADDRESS = '0xd84aD221Fb91119166C81Eb633eE7736b98b9Ecb';
 const USDT_BSC_ADDRESS = '0x55d398326f99059fF775485246999027B3197955';
 const AMOUNT_PER_SHARE = '200'; // 200 USDT
 const TOTAL_SHARES = 500;
 
-// USDT ERC20 ABI (only transfer function needed)
-const USDT_ABI = [
-  {
-    constant: false,
-    inputs: [
-      { name: '_to', type: 'address' },
-      { name: '_value', type: 'uint256' }
-    ],
-    name: 'transfer',
-    outputs: [{ name: '', type: 'bool' }],
-    type: 'function'
-  }
-];
-
 export default function PrivateSale() {
-  const [walletAddress, setWalletAddress] = useState<string>('');
-  const [isConnecting, setIsConnecting] = useState(false);
+  const { walletAddress, isConnecting, connectWallet } = useWallet();
   const [isSending, setIsSending] = useState(false);
   const [txHash, setTxHash] = useState<string>('');
   const [error, setError] = useState<string>('');
-
-  const connectWallet = async (walletType: 'metamask' | 'okx' | 'tp') => {
-    setIsConnecting(true);
-    setError('');
-    
-    try {
-      let ethereum;
-      
-      if (walletType === 'metamask') {
-        ethereum = (window as any).ethereum;
-      } else if (walletType === 'okx') {
-        ethereum = (window as any).okxwallet;
-      } else if (walletType === 'tp') {
-        ethereum = (window as any).ethereum; // TP wallet also uses window.ethereum
-      }
-
-      if (!ethereum) {
-        setError(`请先安装 ${walletType === 'metamask' ? 'MetaMask' : walletType === 'okx' ? 'OKX' : 'TP'} 钱包`);
-        setIsConnecting(false);
-        return;
-      }
-
-      // Request account access
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      
-      // Check if on BSC network (chainId 56)
-      const chainId = await ethereum.request({ method: 'eth_chainId' });
-      
-      if (chainId !== '0x38') { // 0x38 = 56 (BSC Mainnet)
-        try {
-          await ethereum.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: '0x38' }],
-          });
-        } catch (switchError: any) {
-          if (switchError.code === 4902) {
-            // Chain not added, add BSC network
-            await ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [{
-                chainId: '0x38',
-                chainName: 'BNB Smart Chain',
-                nativeCurrency: {
-                  name: 'BNB',
-                  symbol: 'BNB',
-                  decimals: 18
-                },
-                rpcUrls: ['https://bsc-dataseed.binance.org/'],
-                blockExplorerUrls: ['https://bscscan.com/']
-              }]
-            });
-          } else {
-            throw switchError;
-          }
-        }
-      }
-
-      setWalletAddress(accounts[0]);
-    } catch (err: any) {
-      setError(err.message || '连接钱包失败');
-    } finally {
-      setIsConnecting(false);
-    }
-  };
 
   const participatePrivateSale = async () => {
     if (!walletAddress) {
@@ -129,12 +51,6 @@ export default function PrivateSale() {
     }
   };
 
-  const disconnectWallet = () => {
-    setWalletAddress('');
-    setTxHash('');
-    setError('');
-  };
-
   return (
     <div className="space-y-6">
       {/* Wallet Connection Buttons */}
@@ -143,6 +59,10 @@ export default function PrivateSale() {
           <h3 className="text-2xl font-bold text-center mb-6 text-amber-400">
             连接钱包参与私募
           </h3>
+          
+          <p className="text-center text-zinc-400 mb-4">
+            请先从右上角连接钱包
+          </p>
           
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <button
@@ -175,23 +95,6 @@ export default function PrivateSale() {
         </div>
       ) : (
         <div className="space-y-4">
-          {/* Connected Wallet Info */}
-          <div className="bg-green-950/30 border border-green-500/40 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <div className="text-green-400 text-sm mb-1">已连接钱包</div>
-                <div className="text-white font-mono text-sm break-all">
-                  {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-                </div>
-              </div>
-              <button
-                onClick={disconnectWallet}
-                className="px-4 py-2 bg-red-500/20 border border-red-500/40 text-red-400 rounded-lg text-sm hover:bg-red-500/30 transition-colors"
-              >
-                断开连接
-              </button>
-            </div>
-          </div>
 
           {/* Private Sale Info */}
           <div className="bg-gradient-to-br from-amber-950/40 to-zinc-950/60 border-2 border-amber-500/40 rounded-xl p-8">
