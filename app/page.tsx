@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import PrivateSale from './components/PrivateSale';
 
 export default function Home() {
   return (
@@ -111,18 +112,21 @@ export default function Home() {
               </div>
             </a>
           </div>
-          <div className="flex items-center gap-4">
-            <a href="#tokenomics" className="hidden md:block text-zinc-300 hover:text-amber-400 transition-colors">
+          <div className="flex items-center gap-6">
+            <a href="#private-sale" className="text-zinc-300 hover:text-amber-400 transition-colors">
+              私募参与
+            </a>
+            <a href="#tokenomics" className="text-zinc-300 hover:text-amber-400 transition-colors">
               代币经济
             </a>
-            <a href="#contract" className="hidden md:block text-zinc-300 hover:text-amber-400 transition-colors">
+            <a href="#contract" className="text-zinc-300 hover:text-amber-400 transition-colors">
               合约信息
             </a>
             <a 
-              href="#buy" 
-              className="px-4 py-2 bg-amber-500/20 border border-amber-500/30 text-amber-400 font-bold rounded-lg hover:bg-amber-500/30 transition-all text-sm"
+              href="#private-sale" 
+              className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-400 font-bold rounded-lg transition-all"
             >
-              即将开放
+              立即参与
             </a>
           </div>
         </div>
@@ -167,12 +171,12 @@ export default function Home() {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <button 
-              disabled
-              className="px-8 py-4 bg-amber-500/30 text-amber-200 font-bold rounded-lg cursor-not-allowed text-lg opacity-60"
+            <a 
+              href="#private-sale"
+              className="px-8 py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold rounded-lg transition-all text-lg transform hover:scale-105 shadow-lg"
             >
-              即将开放交易 🔜
-            </button>
+              立即参与私募 🚀
+            </a>
             <a href="#contract" className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 border border-amber-500/30 font-bold rounded-lg transition-all text-lg">
               查看合约
             </a>
@@ -194,6 +198,44 @@ export default function Home() {
             <div className="bg-zinc-900/70 backdrop-blur border border-amber-500/30 rounded-lg p-6">
               <div className="text-3xl font-bold text-amber-400">BSC</div>
               <div className="text-zinc-400 text-sm mt-2">主链</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Private Sale Section */}
+      <section id="private-sale" className="py-24 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-amber-950/20 to-black"></div>
+        <div className="absolute inset-0" style={{backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.15) 0%, transparent 70%)'}}></div>
+        
+        <div className="max-w-4xl mx-auto relative z-10">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-amber-400 animate-glow">
+              私 募 进 行 中
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-amber-500 to-transparent mx-auto mb-6"></div>
+            <p className="text-xl text-zinc-300 mb-2">
+              BSC 战壕招募弟兄们，共同对抗 Solana 军团！
+            </p>
+            <div className="inline-block px-6 py-3 bg-red-950/40 border border-red-500/50 rounded-lg">
+              <p className="text-red-400 font-bold text-lg">
+                🔥 限量 500 份 • 每份 200 USDT 🔥
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border-2 border-amber-500/50 rounded-2xl p-8 md:p-12 backdrop-blur-sm shadow-2xl">
+            <PrivateSale />
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-zinc-400 text-sm mb-4">
+              ⚠️ 请确保钱包已连接到 BSC 主网并拥有足够的 USDT
+            </p>
+            <div className="flex items-center justify-center gap-6 text-sm text-zinc-500">
+              <span>✓ 智能合约自动处理</span>
+              <span>✓ 交易上链透明</span>
+              <span>✓ 私募额度先到先得</span>
             </div>
           </div>
         </div>
@@ -468,13 +510,13 @@ export default function Home() {
                   <span>🔍</span>
                   <span>在 BSCScan 查看</span>
                 </a>
-                <button 
-                  disabled
-                  className="flex items-center justify-center gap-2 px-6 py-4 bg-zinc-800/50 border border-zinc-700 text-zinc-500 font-bold rounded-xl cursor-not-allowed"
+                <a 
+                  href="#private-sale"
+                  className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-lg"
                 >
-                  <span>⏳</span>
-                  <span>即将开放交易</span>
-                </button>
+                  <span>🚀</span>
+                  <span>参与私募</span>
+                </a>
               </div>
             </div>
           </div>
@@ -648,17 +690,17 @@ export default function Home() {
                 购买 $WTMGL，与 CZ 并肩作战，干翻 Solana 军团！
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-                <button 
-                  disabled
-                  className="px-10 py-5 bg-amber-500/30 text-amber-200 font-bold rounded-xl cursor-not-allowed text-lg opacity-60 border-2 border-amber-500/30"
+                <a 
+                  href="#private-sale"
+                  className="px-10 py-5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold rounded-xl transition-all text-lg transform hover:scale-105 shadow-lg hover:shadow-amber-500/50"
                 >
                   <span className="flex items-center justify-center gap-2">
-                    <span>⏳</span>
-                    <span>即将开放交易</span>
+                    <span>🚀</span>
+                    <span>立即参与私募</span>
                   </span>
-                </button>
+                </a>
                 <a 
-                  href="https://t.me/WTMGL_Official" 
+                  href="https://t.me/wotamaguilai" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-10 py-5 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 border-2 border-blue-500 font-bold rounded-xl transition-all text-lg transform hover:scale-105 shadow-lg hover:shadow-blue-500/50"
