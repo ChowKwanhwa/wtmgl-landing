@@ -136,7 +136,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center px-4 pt-24 overflow-hidden">
         <div className="absolute inset-0 opacity-60">
           <Image
             src="/cz-horse.jpg"
@@ -149,13 +149,16 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/90"></div>
         
         <div className="relative z-10 max-w-6xl mx-auto text-center">
-          <div className="mb-8 inline-block px-4 py-2 bg-red-600/20 border border-red-500/50 rounded-full text-red-400 text-sm font-mono animate-pulse">
-            🚨 BSC 主网 • 实时部署 🚨
-          </div>
-          
-          <h1 className="text-5xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-clip-text text-transparent drop-shadow-2xl">
-            我踏马归来
-          </h1>
+          <a 
+            href="https://ave.ai/token/0x3544d21316d0ea51292898669cb05a2c75a8a657-bsc?from=Home"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block"
+          >
+            <h1 className="text-5xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 bg-clip-text text-transparent drop-shadow-2xl hover:scale-105 transition-transform">
+              $我踏马归来
+            </h1>
+          </a>
           
           <div className="text-2xl md:text-4xl font-bold mb-8 text-zinc-300">
             再见CZ拉满弓，不惧岁月不惧风<br/>
@@ -479,17 +482,6 @@ export default function Home() {
                 </div>
               </div>
               
-              <div className="hover-lift p-1 rounded-xl bg-gradient-to-r from-zinc-500/20 to-zinc-500/10">
-                <div className="bg-zinc-900/90 p-6 rounded-lg">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-2xl">👤</span>
-                    <div className="text-zinc-400 font-bold">部署者地址</div>
-                  </div>
-                  <div className="bg-black/50 p-4 rounded-lg font-mono text-sm break-all text-zinc-300 border border-zinc-700 hover:border-zinc-500 transition-colors">
-                    0x201bb391c84b710fc745f6ec033d6d0840f0b6c4
-                  </div>
-                </div>
-              </div>
               
               <div className="hover-lift p-1 rounded-xl bg-gradient-to-r from-zinc-500/20 to-zinc-500/10">
                 <div className="bg-zinc-900/90 p-6 rounded-lg">
