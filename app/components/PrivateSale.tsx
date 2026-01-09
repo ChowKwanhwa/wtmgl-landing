@@ -81,22 +81,40 @@ export default function PrivateSale() {
     } catch (err: any) {
       console.error('交易失败:', err);
       console.error('错误详情:', {
-        code: err.code,
-        message: err.message,
-        data: err.data,
-        stack: err.stack,
+        type: typeof err,
+        code: err?.code,
+        message: err?.message,
+        data: err?.data,
+        stack: err?.stack,
         fullError: err
       });
       
       // 处理不同类型的错误
-      if (err.code === 4001 || err.code === 'ACTION_REJECTED') {
-        setError('您取消了交易');
-      } else if (err.message) {
-        setError(`交易失败: ${err.message}`);
-      } else if (typeof err === 'number') {
+      // 1. 检查是否是用户取消（各种可能的形式）
+      if (
+        err?.code === 4001 || 
+        err?.code === 'ACTION_REJECTED' ||
+        err === 0 ||
+        err === '0' ||
+        err?.message === '0' ||
+        err?.message?.toLowerCase()?.includes('user rejected') ||
+        err?.message?.toLowerCase()?.includes('user denied') ||
+        err?.message?.toLowerCase()?.includes('cancel')
+      ) {
+        // 用户取消，只在控制台记录，不显示错误
+        console.log('用户取消了交易请求');
+        return;
+      }
+      
+      // 2. 处理其他错误
+      if (typeof err === 'number' && err !== 0) {
         setError(`交易失败，错误代码: ${err}`);
+      } else if (err?.message && err.message !== '0') {
+        setError(`交易失败: ${err.message}`);
+      } else if (typeof err === 'string') {
+        setError(`交易失败: ${err}`);
       } else {
-        setError(`交易失败，请重试。详情: ${JSON.stringify(err)}`);
+        setError('交易失败，请重试');
       }
     } finally {
       setIsSending(false);
