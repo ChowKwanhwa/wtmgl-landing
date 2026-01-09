@@ -7,6 +7,7 @@ interface WalletContextType {
   isConnecting: boolean;
   connectedProvider: any;
   connectWallet: (walletType: 'metamask' | 'okx' | 'tp') => Promise<void>;
+  switchAccount: () => Promise<void>;
   disconnectWallet: () => void;
 }
 
@@ -149,13 +150,47 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const switchAccount = async () => {
+    if (!connectedProvider) {
+      alert('请先连接钱包');
+      return;
+    }
+
+    try {
+      // 请求用户在钱包中选择账号
+      const accounts = await connectedProvider.request({ 
+        method: 'eth_requestAccounts' 
+      });
+      
+      if (accounts && accounts[0] && accounts[0] !== walletAddress) {
+        // 用户选择了新账号，更新状态
+        setWalletAddress(accounts[0]);
+        console.log('切换到新账号:', accounts[0]);
+      }
+    } catch (err: any) {
+      // 检查是否是用户取消
+      if (
+        err?.code === 4001 || 
+        err === 0 || 
+        err === '0' ||
+        err?.message === '0'
+      ) {
+        console.log('用户取消了切换账号');
+        return;
+      }
+      
+      console.error('切换账号失败:', err);
+      alert('切换账号失败，请重试');
+    }
+  };
+
   const disconnectWallet = () => {
     setWalletAddress('');
     setConnectedProvider(null);
   };
 
   return (
-    <WalletContext.Provider value={{ walletAddress, isConnecting, connectedProvider, connectWallet, disconnectWallet }}>
+    <WalletContext.Provider value={{ walletAddress, isConnecting, connectedProvider, connectWallet, switchAccount, disconnectWallet }}>
       {children}
     </WalletContext.Provider>
   );
