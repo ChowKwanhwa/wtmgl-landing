@@ -25,12 +25,11 @@ export default function PrivateSale() {
     setTxHash('');
 
     try {
-      // 获取正确的 provider - 优先 okxwallet，然后是 ethereum
+      // 获取正确的 provider
       let ethereum = (window as any).okxwallet;
       if (!ethereum) {
         const providers = (window as any).ethereum?.providers;
         if (providers && providers.length > 0) {
-          // 使用第一个可用的 provider
           ethereum = providers[0];
         } else {
           ethereum = (window as any).ethereum;
@@ -44,20 +43,36 @@ export default function PrivateSale() {
       }
       
       // USDT has 18 decimals on BSC
-      const amountInWei = BigInt(parseFloat(AMOUNT_PER_SHARE) * 1e18).toString(16);
+      const amountInWei = BigInt(parseFloat(AMOUNT_PER_SHARE) * 1e18);
       
-      // Encode transfer function call
-      const transferData = ethereum.request({
+      // Properly encode the address (remove 0x and pad left to 64 chars)
+      const addressParam = PRIVATE_SALE_ADDRESS.slice(2).toLowerCase().padStart(64, '0');
+      
+      // Convert amount to hex and pad left to 64 chars
+      const amountParam = amountInWei.toString(16).padStart(64, '0');
+      
+      // ERC20 transfer function signature: transfer(address,uint256)
+      // Function selector: 0xa9059cbb
+      const data = `0xa9059cbb${addressParam}${amountParam}`;
+      
+      console.log('Transaction data:', {
+        from: walletAddress,
+        to: USDT_BSC_ADDRESS,
+        data: data,
+        addressParam,
+        amountParam
+      });
+      
+      const hash = await ethereum.request({
         method: 'eth_sendTransaction',
         params: [{
           from: walletAddress,
           to: USDT_BSC_ADDRESS,
-          data: `0xa9059cbb${PRIVATE_SALE_ADDRESS.slice(2).padStart(64, '0')}${amountInWei.padStart(64, '0')}`,
+          data: data,
           gas: '0x186A0', // 100000 gas
         }]
       });
 
-      const hash = await transferData;
       setTxHash(hash);
       
     } catch (err: any) {

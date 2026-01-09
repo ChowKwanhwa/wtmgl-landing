@@ -30,17 +30,27 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           return;
         }
       } else if (walletType === 'metamask') {
-        // MetaMask: 检查是否是真正的 MetaMask
+        // MetaMask: 需要特别处理多钱包环境
         const providers = (window as any).ethereum?.providers;
-        if (providers) {
-          // 多钱包环境，找到 MetaMask
-          ethereum = providers.find((p: any) => p.isMetaMask && !p.isOkxWallet);
-        } else if ((window as any).ethereum?.isMetaMask && !(window as any).ethereum?.isOkxWallet) {
-          ethereum = (window as any).ethereum;
+        
+        if (providers && Array.isArray(providers)) {
+          // 多钱包环境，找到真正的 MetaMask
+          ethereum = providers.find((p: any) => {
+            // 必须是 MetaMask 且不是 OKX
+            return p.isMetaMask && !p.isOkxWallet && !p.isOKExWallet;
+          });
+        } 
+        
+        // 如果没找到，尝试直接使用 window.ethereum（仅当它是 MetaMask）
+        if (!ethereum && (window as any).ethereum) {
+          const eth = (window as any).ethereum;
+          if (eth.isMetaMask && !eth.isOkxWallet && !eth.isOKExWallet) {
+            ethereum = eth;
+          }
         }
         
         if (!ethereum) {
-          alert('请先安装 MetaMask 钱包，或者禁用其他钱包扩展');
+          alert('未检测到 MetaMask 钱包。\n\n如果已安装 MetaMask，请尝试：\n1. 禁用 OKX 钱包扩展\n2. 刷新页面后重试\n3. 或使用 OKX 钱包连接');
           setIsConnecting(false);
           return;
         }
