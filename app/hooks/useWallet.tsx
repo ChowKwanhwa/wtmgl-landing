@@ -5,6 +5,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 interface WalletContextType {
   walletAddress: string;
   isConnecting: boolean;
+  connectedProvider: any;
   connectWallet: (walletType: 'metamask' | 'okx' | 'tp') => Promise<void>;
   disconnectWallet: () => void;
 }
@@ -14,6 +15,7 @@ const WalletContext = createContext<WalletContextType | undefined>(undefined);
 export function WalletProvider({ children }: { children: ReactNode }) {
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [isConnecting, setIsConnecting] = useState(false);
+  const [connectedProvider, setConnectedProvider] = useState<any>(null);
 
   const connectWallet = async (walletType: 'metamask' | 'okx' | 'tp') => {
     setIsConnecting(true);
@@ -105,6 +107,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       }
 
       setWalletAddress(accounts[0]);
+      setConnectedProvider(ethereum);
     } catch (err: any) {
       console.error('连接钱包失败:', err);
       
@@ -124,10 +127,11 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   const disconnectWallet = () => {
     setWalletAddress('');
+    setConnectedProvider(null);
   };
 
   return (
-    <WalletContext.Provider value={{ walletAddress, isConnecting, connectWallet, disconnectWallet }}>
+    <WalletContext.Provider value={{ walletAddress, isConnecting, connectedProvider, connectWallet, disconnectWallet }}>
       {children}
     </WalletContext.Provider>
   );

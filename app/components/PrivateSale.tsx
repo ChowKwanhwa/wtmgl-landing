@@ -9,7 +9,7 @@ const AMOUNT_PER_SHARE = '200'; // 200 USDT
 const TOTAL_SHARES = 500;
 
 export default function PrivateSale() {
-  const { walletAddress, isConnecting, connectWallet } = useWallet();
+  const { walletAddress, isConnecting, connectWallet, connectedProvider } = useWallet();
   const [isSending, setIsSending] = useState(false);
   const [txHash, setTxHash] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -20,27 +20,17 @@ export default function PrivateSale() {
       return;
     }
 
+    if (!connectedProvider) {
+      setError('钱包连接已断开，请重新连接');
+      return;
+    }
+
     setIsSending(true);
     setError('');
     setTxHash('');
 
     try {
-      // 获取正确的 provider
-      let ethereum = (window as any).okxwallet;
-      if (!ethereum) {
-        const providers = (window as any).ethereum?.providers;
-        if (providers && providers.length > 0) {
-          ethereum = providers[0];
-        } else {
-          ethereum = (window as any).ethereum;
-        }
-      }
-      
-      if (!ethereum) {
-        setError('未检测到钱包');
-        setIsSending(false);
-        return;
-      }
+      const ethereum = connectedProvider;
       
       // USDT has 18 decimals on BSC
       const amountInWei = BigInt(parseFloat(AMOUNT_PER_SHARE) * 1e18);
@@ -90,14 +80,23 @@ export default function PrivateSale() {
       
     } catch (err: any) {
       console.error('交易失败:', err);
+      console.error('错误详情:', {
+        code: err.code,
+        message: err.message,
+        data: err.data,
+        stack: err.stack,
+        fullError: err
+      });
       
       // 处理不同类型的错误
       if (err.code === 4001 || err.code === 'ACTION_REJECTED') {
         setError('您取消了交易');
       } else if (err.message) {
         setError(`交易失败: ${err.message}`);
+      } else if (typeof err === 'number') {
+        setError(`交易失败，错误代码: ${err}`);
       } else {
-        setError('交易失败，请重试');
+        setError(`交易失败，请重试。详情: ${JSON.stringify(err)}`);
       }
     } finally {
       setIsSending(false);

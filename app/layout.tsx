@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "我踏马归来 | WTMGL - BSC 战壕反击战",
-  description: "BSC 战壕呼叫各位大兵！你们踏马来了吗？与 CZ 并肩作战，干翻 Solana 军团！$WTMGL 代币，USDT 自动分红，3.5% 交易税，555万总供应量。",
+  metadataBase: new URL('https://wtmgl.com'),
+  title: '我踏马归来 (WTMGL) - BSC 战壕自动分红代币',
+  description: 'BSC 战壕呼叫各位大兵！再见CZ拉满弓，不惧岁月不惧风。$WTMGL 是一个基于 BNB Smart Chain 的自动 USDT 分红代币，持有即可获得被动收益。',
   keywords: ["WTMGL", "我踏马归来", "BSC", "BNB Chain", "Meme Token", "CZ", "Binance", "Crypto", "DeFi", "USDT 分红"],
   authors: [{ name: "WTMGL Team" }],
   openGraph: {
