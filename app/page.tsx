@@ -187,7 +187,7 @@ export default function Home() {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <div className="bg-zinc-900/70 backdrop-blur border border-amber-500/30 rounded-lg p-6">
-              <div className="text-3xl font-bold text-amber-400">$WTMGL</div>
+              <div className="text-2xl font-bold text-amber-400">我踏马归来</div>
               <div className="text-zinc-400 text-sm mt-2">代币符号</div>
             </div>
             <div className="bg-zinc-900/70 backdrop-blur border border-amber-500/30 rounded-lg p-6">
@@ -474,7 +474,7 @@ export default function Home() {
                     <div className="text-amber-400 font-bold">合约地址</div>
                   </div>
                   <div className="bg-black/50 p-4 rounded-lg font-mono text-sm break-all text-amber-400 border border-amber-500/30 hover:border-amber-500/60 transition-colors">
-                    0x15C3Ab6135873c84F3a58BE05B6DA4421630eF6C
+                    0x3544d21316D0Ea51292898669Cb05a2C75A8a657
                   </div>
                 </div>
               </div>
@@ -505,7 +505,7 @@ export default function Home() {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 pt-6 border-t border-zinc-800">
                 <a 
-                  href="https://bscscan.com/address/0x15C3Ab6135873c84F3a58BE05B6DA4421630eF6C" 
+                  href="https://bscscan.com/address/0x3544d21316D0Ea51292898669Cb05a2C75A8a657" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold rounded-xl transition-all transform hover:scale-105 shadow-lg hover:shadow-amber-500/50"
@@ -690,7 +690,7 @@ export default function Home() {
                 BSC 战壕需要你！
               </p>
               <p className="text-lg md:text-xl text-zinc-300 mb-10 max-w-2xl mx-auto">
-                购买 $WTMGL，与 CZ 并肩作战，干翻 Solana 军团！
+                购买 $我踏马归来，与 CZ 并肩作战，干翻 Solana 军团！
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-10">
                 <a 

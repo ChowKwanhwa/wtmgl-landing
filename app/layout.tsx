@@ -16,17 +16,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://wtmgl.com'),
-  title: '我踏马归来 (WTMGL) - BSC 战壕自动分红代币',
-  description: 'BSC 战壕呼叫各位大兵！再见CZ拉满弓，不惧岁月不惧风。$WTMGL 是一个基于 BNB Smart Chain 的自动 USDT 分红代币，持有即可获得被动收益。',
-  keywords: ["WTMGL", "我踏马归来", "BSC", "BNB Chain", "Meme Token", "CZ", "Binance", "Crypto", "DeFi", "USDT 分红"],
+  title: '我踏马归来 - BSC 战壕自动分红代币',
+  description: 'BSC 战壕呼叫各位大兵！再见CZ拉满弓，不惧岁月不惧风。$我踏马归来 是一个基于 BNB Smart Chain 的自动 USDT 分红代币，持有即可获得被动收益。',
+  keywords: ["我踏马归来", "BSC", "BNB Chain", "Meme Token", "CZ", "Binance", "Crypto", "DeFi", "USDT 分红"],
   authors: [{ name: "WTMGL Team" }],
   openGraph: {
     type: "website",
     locale: "zh_CN",
     url: "https://wtmgl.io",
-    title: "我踏马归来 | WTMGL - BSC Meme Token",
+    title: "我踏马归来 - BSC Meme Token",
     description: "BSC 战壕呼叫各位大兵！再见CZ拉满弓，不惧岁月不惧风。弟兄们我踏马来了！",
-    siteName: "WTMGL Token",
+    siteName: "我踏马归来 Token",
     images: [
       {
         url: "/cz-horse.jpg",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "我踏马归来 | WTMGL - BSC Meme Token",
+    title: "我踏马归来 - BSC Meme Token",
     description: "BSC 战壕呼叫各位大兵！你们踏马来了吗？",
     images: ["/cz-horse.jpg"],
   },
