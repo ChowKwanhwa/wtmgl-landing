@@ -109,15 +109,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setWalletAddress(accounts[0]);
       setConnectedProvider(ethereum);
     } catch (err: any) {
-      console.error('连接钱包失败:', err);
-      console.error('错误详情:', {
-        type: typeof err,
-        code: err?.code,
-        message: err?.message,
-        fullError: err
-      });
-      
-      // 处理用户取消连接（检查各种可能的形式）
+      // 先检查是否是用户取消（检查各种可能的形式）
       if (
         err?.code === 4001 || 
         err?.code === 'ACTION_REJECTED' ||
@@ -128,12 +120,21 @@ export function WalletProvider({ children }: { children: ReactNode }) {
         err?.message?.toLowerCase()?.includes('user denied') ||
         err?.message?.toLowerCase()?.includes('cancel')
       ) {
-        // 用户取消，只在控制台记录，不显示错误
+        // 用户取消，什么都不做，直接返回
         console.log('用户取消了连接请求');
         return;
       }
       
-      // 处理其他错误
+      // 不是用户取消，才记录错误
+      console.error('连接钱包失败:', err);
+      console.error('错误详情:', {
+        type: typeof err,
+        code: err?.code,
+        message: err?.message,
+        fullError: err
+      });
+      
+      // 显示错误提示
       if (typeof err === 'number' && err !== 0) {
         alert(`连接失败，错误代码: ${err}`);
       } else if (err?.message && err.message !== '0') {

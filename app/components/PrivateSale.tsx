@@ -79,18 +79,7 @@ export default function PrivateSale() {
       setTxHash(hash);
       
     } catch (err: any) {
-      console.error('交易失败:', err);
-      console.error('错误详情:', {
-        type: typeof err,
-        code: err?.code,
-        message: err?.message,
-        data: err?.data,
-        stack: err?.stack,
-        fullError: err
-      });
-      
-      // 处理不同类型的错误
-      // 1. 检查是否是用户取消（各种可能的形式）
+      // 先检查是否是用户取消（各种可能的形式）
       if (
         err?.code === 4001 || 
         err?.code === 'ACTION_REJECTED' ||
@@ -101,12 +90,23 @@ export default function PrivateSale() {
         err?.message?.toLowerCase()?.includes('user denied') ||
         err?.message?.toLowerCase()?.includes('cancel')
       ) {
-        // 用户取消，只在控制台记录，不显示错误
+        // 用户取消，什么都不做，直接返回
         console.log('用户取消了交易请求');
         return;
       }
       
-      // 2. 处理其他错误
+      // 不是用户取消，才记录错误
+      console.error('交易失败:', err);
+      console.error('错误详情:', {
+        type: typeof err,
+        code: err?.code,
+        message: err?.message,
+        data: err?.data,
+        stack: err?.stack,
+        fullError: err
+      });
+      
+      // 显示错误提示
       if (typeof err === 'number' && err !== 0) {
         setError(`交易失败，错误代码: ${err}`);
       } else if (err?.message && err.message !== '0') {
