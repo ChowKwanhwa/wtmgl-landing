@@ -107,7 +107,16 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       setWalletAddress(accounts[0]);
     } catch (err: any) {
       console.error('连接钱包失败:', err);
-      alert(err.message || '连接钱包失败');
+      
+      // 处理用户取消连接
+      if (err.code === 4001 || err.code === 'ACTION_REJECTED') {
+        // 用户取消，不显示错误
+        console.log('用户取消了连接请求');
+      } else if (err.message) {
+        alert(`连接失败: ${err.message}`);
+      } else {
+        alert('连接钱包失败，请重试');
+      }
     } finally {
       setIsConnecting(false);
     }

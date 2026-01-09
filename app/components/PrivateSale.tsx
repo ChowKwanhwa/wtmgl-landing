@@ -45,22 +45,34 @@ export default function PrivateSale() {
       // USDT has 18 decimals on BSC
       const amountInWei = BigInt(parseFloat(AMOUNT_PER_SHARE) * 1e18);
       
-      // Properly encode the address (remove 0x and pad left to 64 chars)
-      const addressParam = PRIVATE_SALE_ADDRESS.slice(2).toLowerCase().padStart(64, '0');
+      // 移除 0x 前缀并转为小写
+      let addressHex = PRIVATE_SALE_ADDRESS.slice(2).toLowerCase();
+      // 确保地址是40个字符（20字节）
+      if (addressHex.length !== 40) {
+        throw new Error('Invalid address length');
+      }
+      // 左填充到64个字符（32字节）
+      const addressParam = addressHex.padStart(64, '0');
       
-      // Convert amount to hex and pad left to 64 chars
+      // 转换金额为十六进制并左填充到64个字符
       const amountParam = amountInWei.toString(16).padStart(64, '0');
       
-      // ERC20 transfer function signature: transfer(address,uint256)
-      // Function selector: 0xa9059cbb
-      const data = `0xa9059cbb${addressParam}${amountParam}`;
+      // ERC20 transfer 函数编码
+      // 函数选择器: 0xa9059cbb (transfer(address,uint256) 的 keccak256 前4字节)
+      const functionSelector = 'a9059cbb';
+      const data = `0x${functionSelector}${addressParam}${amountParam}`;
       
-      console.log('Transaction data:', {
+      console.log('发送交易:', {
         from: walletAddress,
         to: USDT_BSC_ADDRESS,
         data: data,
-        addressParam,
-        amountParam
+        decodedAddress: `0x${addressHex}`,
+        decodedAmount: amountInWei.toString(),
+        fullData: {
+          selector: functionSelector,
+          addressParam,
+          amountParam
+        }
       });
       
       const hash = await ethereum.request({
@@ -70,13 +82,23 @@ export default function PrivateSale() {
           to: USDT_BSC_ADDRESS,
           data: data,
           gas: '0x186A0', // 100000 gas
+          value: '0x0', // 不发送 BNB
         }]
       });
 
       setTxHash(hash);
       
     } catch (err: any) {
-      setError(err.message || '交易失败');
+      console.error('交易失败:', err);
+      
+      // 处理不同类型的错误
+      if (err.code === 4001 || err.code === 'ACTION_REJECTED') {
+        setError('您取消了交易');
+      } else if (err.message) {
+        setError(`交易失败: ${err.message}`);
+      } else {
+        setError('交易失败，请重试');
+      }
     } finally {
       setIsSending(false);
     }
