@@ -151,23 +151,38 @@ export function WalletProvider({ children }: { children: ReactNode }) {
   };
 
   const switchAccount = async () => {
+    console.log('🔄 switchAccount 被调用');
+    console.log('connectedProvider:', connectedProvider);
+    console.log('当前地址:', walletAddress);
+    
     if (!connectedProvider) {
+      console.error('❌ 没有连接的 provider');
       alert('请先连接钱包');
       return;
     }
 
     try {
+      console.log('📡 正在请求账号切换...');
+      
       // 请求用户在钱包中选择账号
       const accounts = await connectedProvider.request({ 
         method: 'eth_requestAccounts' 
       });
       
-      if (accounts && accounts[0] && accounts[0] !== walletAddress) {
-        // 用户选择了新账号，更新状态
-        setWalletAddress(accounts[0]);
-        console.log('切换到新账号:', accounts[0]);
+      console.log('✅ 收到账号列表:', accounts);
+      
+      if (accounts && accounts[0]) {
+        if (accounts[0] !== walletAddress) {
+          // 用户选择了新账号，更新状态
+          setWalletAddress(accounts[0]);
+          console.log('✅ 切换到新账号:', accounts[0]);
+        } else {
+          console.log('ℹ️ 用户选择了相同的账号');
+        }
       }
     } catch (err: any) {
+      console.error('❌ switchAccount 错误:', err);
+      
       // 检查是否是用户取消
       if (
         err?.code === 4001 || 
@@ -180,7 +195,7 @@ export function WalletProvider({ children }: { children: ReactNode }) {
       }
       
       console.error('切换账号失败:', err);
-      alert('切换账号失败，请重试');
+      alert(`切换账号失败: ${err.message || err}`);
     }
   };
 

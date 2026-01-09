@@ -196,8 +196,11 @@ function HomePage() {
                     </div>
                     <button
                       onClick={async () => {
+                        console.log('👆 切换账号按钮被点击');
                         setShowWalletMenu(false);
+                        console.log('📞 调用 switchAccount...');
                         await switchAccount();
+                        console.log('✅ switchAccount 完成');
                       }}
                       className="w-full px-4 py-3 text-left hover:bg-zinc-800 transition-colors flex items-center gap-2 border-b border-zinc-800 text-amber-400"
                     >
