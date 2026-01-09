@@ -21,18 +21,45 @@ export function WalletProvider({ children }: { children: ReactNode }) {
     try {
       let ethereum;
       
-      if (walletType === 'metamask') {
-        ethereum = (window as any).ethereum;
-      } else if (walletType === 'okx') {
+      if (walletType === 'okx') {
+        // OKX Wallet 优先使用 okxwallet 对象
         ethereum = (window as any).okxwallet;
+        if (!ethereum) {
+          alert('请先安装 OKX Wallet 钱包');
+          setIsConnecting(false);
+          return;
+        }
+      } else if (walletType === 'metamask') {
+        // MetaMask: 检查是否是真正的 MetaMask
+        const providers = (window as any).ethereum?.providers;
+        if (providers) {
+          // 多钱包环境，找到 MetaMask
+          ethereum = providers.find((p: any) => p.isMetaMask && !p.isOkxWallet);
+        } else if ((window as any).ethereum?.isMetaMask && !(window as any).ethereum?.isOkxWallet) {
+          ethereum = (window as any).ethereum;
+        }
+        
+        if (!ethereum) {
+          alert('请先安装 MetaMask 钱包，或者禁用其他钱包扩展');
+          setIsConnecting(false);
+          return;
+        }
       } else if (walletType === 'tp') {
-        ethereum = (window as any).ethereum;
-      }
-
-      if (!ethereum) {
-        alert(`请先安装 ${walletType === 'metamask' ? 'MetaMask' : walletType === 'okx' ? 'OKX' : 'TP'} 钱包`);
-        setIsConnecting(false);
-        return;
+        // TokenPocket: 检查 isTokenPocket 或 isTp
+        const providers = (window as any).ethereum?.providers;
+        if (providers) {
+          ethereum = providers.find((p: any) => p.isTokenPocket || p.isTp);
+        } else if ((window as any).ethereum?.isTokenPocket || (window as any).ethereum?.isTp) {
+          ethereum = (window as any).ethereum;
+        } else if ((window as any).tokenpocket?.ethereum) {
+          ethereum = (window as any).tokenpocket.ethereum;
+        }
+        
+        if (!ethereum) {
+          alert('请先安装 TokenPocket 钱包');
+          setIsConnecting(false);
+          return;
+        }
       }
 
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });

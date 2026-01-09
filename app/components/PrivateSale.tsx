@@ -25,10 +25,26 @@ export default function PrivateSale() {
     setTxHash('');
 
     try {
-      const ethereum = (window as any).ethereum || (window as any).okxwallet;
+      // 获取正确的 provider - 优先 okxwallet，然后是 ethereum
+      let ethereum = (window as any).okxwallet;
+      if (!ethereum) {
+        const providers = (window as any).ethereum?.providers;
+        if (providers && providers.length > 0) {
+          // 使用第一个可用的 provider
+          ethereum = providers[0];
+        } else {
+          ethereum = (window as any).ethereum;
+        }
+      }
+      
+      if (!ethereum) {
+        setError('未检测到钱包');
+        setIsSending(false);
+        return;
+      }
       
       // USDT has 18 decimals on BSC
-      const amountInWei = (parseFloat(AMOUNT_PER_SHARE) * 1e18).toString(16);
+      const amountInWei = BigInt(parseFloat(AMOUNT_PER_SHARE) * 1e18).toString(16);
       
       // Encode transfer function call
       const transferData = ethereum.request({
