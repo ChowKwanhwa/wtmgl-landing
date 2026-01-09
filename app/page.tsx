@@ -6,7 +6,7 @@ import PrivateSale from './components/PrivateSale';
 import { WalletProvider, useWallet } from './hooks/useWallet';
 
 function HomePage() {
-  const { walletAddress, isConnecting, connectWallet, disconnectWallet } = useWallet();
+  const { walletAddress, isConnecting, connectWallet, disconnectWallet, connectedProvider } = useWallet();
   const [showWalletMenu, setShowWalletMenu] = useState(false);
 
   return (
@@ -195,12 +195,38 @@ function HomePage() {
                       </div>
                     </div>
                     <button
-                      onClick={() => {
+                      onClick={async () => {
                         setShowWalletMenu(false);
-                        // Trigger wallet switch by requesting accounts again
-                        const ethereum = (window as any).ethereum || (window as any).okxwallet;
-                        if (ethereum) {
-                          ethereum.request({ method: 'eth_requestAccounts' });
+                        
+                        if (!connectedProvider) {
+                          alert('请先连接钱包');
+                          return;
+                        }
+                        
+                        try {
+                          // 请求切换账号
+                          const accounts = await connectedProvider.request({ 
+                            method: 'eth_requestAccounts' 
+                          });
+                          
+                          if (accounts && accounts[0]) {
+                            // 账号切换成功，重新加载页面以更新状态
+                            window.location.reload();
+                          }
+                        } catch (err: any) {
+                          // 检查是否是用户取消
+                          if (
+                            err?.code === 4001 || 
+                            err === 0 || 
+                            err === '0' ||
+                            err?.message === '0'
+                          ) {
+                            console.log('用户取消了切换账号');
+                            return;
+                          }
+                          
+                          console.error('切换账号失败:', err);
+                          alert('切换账号失败，请重试');
                         }
                       }}
                       className="w-full px-4 py-3 text-left hover:bg-zinc-800 transition-colors flex items-center gap-2 border-b border-zinc-800 text-amber-400"
