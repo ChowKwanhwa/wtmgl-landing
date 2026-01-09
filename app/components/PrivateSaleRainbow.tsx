@@ -58,17 +58,25 @@ export default function PrivateSaleRainbow() {
       setTxHash(hash);
       
     } catch (err: any) {
-      // 检查是否是用户取消
-      if (
+      // 检查是否是用户取消（各种可能的形式）
+      const isUserRejection = 
         err?.code === 4001 || 
+        err?.code === 'ACTION_REJECTED' ||
         err === 0 || 
         err === '0' ||
-        err?.message === '0'
-      ) {
+        err?.message === '0' ||
+        err?.message?.toLowerCase()?.includes('user rejected') ||
+        err?.message?.toLowerCase()?.includes('user denied') ||
+        err?.message?.toLowerCase()?.includes('cancel') ||
+        err?.name === 'TransactionExecutionError';
+      
+      if (isUserRejection) {
+        // 用户取消，什么都不做
         console.log('用户取消了交易请求');
         return;
       }
       
+      // 不是用户取消，才记录错误
       console.error('交易失败:', err);
       
       if (err?.message) {
