@@ -1,13 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
-import PrivateSale from './components/PrivateSale';
-import { WalletProvider, useWallet } from './hooks/useWallet';
+import PrivateSaleRainbow from './components/PrivateSaleRainbow';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-function HomePage() {
-  const { walletAddress, isConnecting, connectWallet, disconnectWallet, switchAccount } = useWallet();
-  const [showWalletMenu, setShowWalletMenu] = useState(false);
+export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black text-white">
@@ -128,99 +125,12 @@ function HomePage() {
               合约信息
             </a>
             
-            {/* Wallet Connection Button */}
-            {!walletAddress ? (
-              <div className="relative">
-                <button 
-                  onClick={() => setShowWalletMenu(!showWalletMenu)}
-                  disabled={isConnecting}
-                  className="px-4 py-2 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/50 text-amber-400 font-bold rounded-lg transition-all disabled:opacity-50"
-                >
-                  {isConnecting ? '连接中...' : '连接钱包'}
-                </button>
-                
-                {showWalletMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl z-50">
-                    <button
-                      onClick={() => {
-                        connectWallet('metamask');
-                        setShowWalletMenu(false);
-                      }}
-                      className="w-full px-4 py-3 text-left hover:bg-zinc-800 transition-colors flex items-center gap-2 border-b border-zinc-800"
-                    >
-                      <span>🦊</span>
-                      <span>MetaMask</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        connectWallet('okx');
-                        setShowWalletMenu(false);
-                      }}
-                      className="w-full px-4 py-3 text-left hover:bg-zinc-800 transition-colors flex items-center gap-2 border-b border-zinc-800"
-                    >
-                      <span>⭕</span>
-                      <span>OKX Wallet</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        connectWallet('tp');
-                        setShowWalletMenu(false);
-                      }}
-                      className="w-full px-4 py-3 text-left hover:bg-zinc-800 transition-colors flex items-center gap-2"
-                    >
-                      <span>🔵</span>
-                      <span>TP Wallet</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="relative">
-                <button 
-                  onClick={() => setShowWalletMenu(!showWalletMenu)}
-                  className="px-4 py-2 bg-green-500/20 hover:bg-green-500/30 border border-green-500/50 text-green-400 font-bold rounded-lg transition-all flex items-center gap-2"
-                >
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                  <span className="font-mono text-sm">
-                    {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
-                  </span>
-                </button>
-                
-                {showWalletMenu && (
-                  <div className="absolute right-0 mt-2 w-56 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl z-50">
-                    <div className="px-4 py-3 border-b border-zinc-800">
-                      <div className="text-xs text-zinc-400 mb-1">已连接地址</div>
-                      <div className="text-sm font-mono text-green-400 break-all">
-                        {walletAddress}
-                      </div>
-                    </div>
-                    <button
-                      onClick={async () => {
-                        console.log('👆 切换账号按钮被点击');
-                        setShowWalletMenu(false);
-                        console.log('📞 调用 switchAccount...');
-                        await switchAccount();
-                        console.log('✅ switchAccount 完成');
-                      }}
-                      className="w-full px-4 py-3 text-left hover:bg-zinc-800 transition-colors flex items-center gap-2 border-b border-zinc-800 text-amber-400"
-                    >
-                      <span>🔄</span>
-                      <span>切换账号</span>
-                    </button>
-                    <button
-                      onClick={() => {
-                        disconnectWallet();
-                        setShowWalletMenu(false);
-                      }}
-                      className="w-full px-4 py-3 text-left hover:bg-zinc-800 transition-colors flex items-center gap-2 text-red-400"
-                    >
-                      <span>🚪</span>
-                      <span>断开连接</span>
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
+            {/* RainbowKit Connect Button */}
+            <ConnectButton 
+              accountStatus="address"
+              chainStatus="none"
+              showBalance={false}
+            />
           </div>
         </div>
       </nav>
@@ -318,7 +228,7 @@ function HomePage() {
           </div>
 
           <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border-2 border-amber-500/50 rounded-2xl p-8 md:p-12 backdrop-blur-sm shadow-2xl">
-            <PrivateSale />
+            <PrivateSaleRainbow />
           </div>
 
           <div className="mt-8 text-center">
@@ -828,13 +738,5 @@ function HomePage() {
         </div>
       </footer>
     </div>
-  );
-}
-
-export default function Home() {
-  return (
-    <WalletProvider>
-      <HomePage />
-    </WalletProvider>
   );
 }
